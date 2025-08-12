@@ -1,4 +1,5 @@
 // app/layout.tsx
+import UXEffects from "@/components/UXEffects";
 import "./globals.css";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           Give
         </a>
         <PWA />
+        <UXEffects />
       </body>
     </html>
   );

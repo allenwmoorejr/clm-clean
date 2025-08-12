@@ -17,9 +17,10 @@ export default function WatchPage() {
   const [showIframe, setShowIframe] = useState(false);
   const [progress, setProgress] = useState(0);
   const [resume, setResume] = useState<number | null>(null);
-  const [poster, setPoster] = useState("/live-preview.jpg");
+  const [poster, setPoster] = useState("/pastor-hero.jpg"); // curated default
   const timerRef = useRef<any>(null);
 
+  // fetch live/latest
   useEffect(() => {
     fetch("/api/live")
       .then((r) => r.json())
@@ -29,16 +30,21 @@ export default function WatchPage() {
 
   const videoId = data?.live ? data.videoId : data?.latestId;
 
-  // Choose the best thumbnail once we know the ID
+  // update poster from videoId (with maxres -> hq fallback)
   useEffect(() => {
-    if (!videoId) return;
+    if (!videoId) {
+      setPoster("/pastor-hero.jpg");
+      return;
+    }
     const test = new Image();
-    test.onload = () => setPoster(`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`);
-    test.onerror = () => setPoster(`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`);
+    test.onload = () =>
+      setPoster(`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`);
+    test.onerror = () =>
+      setPoster(`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`);
     test.src = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
   }, [videoId]);
 
-  // Resume progress (stored locally)
+  // load saved resume position
   useEffect(() => {
     if (!videoId) return;
     const raw = localStorage.getItem(`yt-progress-${videoId}`);
@@ -50,14 +56,17 @@ export default function WatchPage() {
     }
   }, [videoId]);
 
-  // Increment progress while iframe is shown
+  // basic in-page progress timer (for share timestamp)
   useEffect(() => {
     if (!showIframe || !videoId) return;
     timerRef.current = setInterval(() => {
       setProgress((p) => {
         const next = p + 1;
         if (next % 5 === 0) {
-          localStorage.setItem(`yt-progress-${videoId}`, JSON.stringify({ seconds: next, at: Date.now() }));
+          localStorage.setItem(
+            `yt-progress-${videoId}`,
+            JSON.stringify({ seconds: next, at: Date.now() })
+          );
         }
         return next;
       });
@@ -71,11 +80,45 @@ export default function WatchPage() {
     return `https://www.youtube.com/watch?v=${videoId}${t > 0 ? `&t=${t}s` : ""}`;
   }, [videoId, progress, resume]);
 
+  const topButtons = (
+    <>
+      <a
+        href={
+          videoId
+            ? `https://www.youtube.com/watch?v=${videoId}`
+            : `https://www.youtube.com/channel/${process.env.NEXT_PUBLIC_CHANNEL_ID ?? ""}/live`
+        }
+        target="_blank"
+        rel="noreferrer"
+        className="btn-primary"
+      >
+        Watch on YouTube
+      </a>
+      {videoId && (
+        <button onClick={() => setShowIframe(true)} className="btn-ghost">
+          {resume && resume > 15 ? `Resume in Page (${formatTime(resume)})` : "Play in Page"}
+        </button>
+      )}
+      {videoId && resume && resume > 15 && (
+        <a
+          href={`https://www.youtube.com/watch?v=${videoId}&t=${resume}s`}
+          target="_blank"
+          rel="noreferrer"
+          className="btn-ghost"
+        >
+          Resume on YouTube ({formatTime(resume)})
+        </a>
+      )}
+    </>
+  );
+
   return (
     <section className="container py-16">
       <h1>{data?.live ? "We’re Live Now" : "Watch"}</h1>
       <p className="text-white/70 mt-2">
-        {data?.live ? "Thanks for worshiping with us!" : "We’re not live right now — enjoy the latest message below."}
+        {data?.live
+          ? "Thanks for worshiping with us!"
+          : "We’re not live right now — enjoy the latest message below."}
       </p>
 
       <div className="card overflow-hidden mt-8 relative">
@@ -84,37 +127,10 @@ export default function WatchPage() {
             <>
               <img src={poster} alt="CLM Live Preview" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-              <div className="absolute inset-0 flex items-end justify-start">
+              {/* Desktop/tablet overlay */}
+              <div className="hidden sm:flex absolute inset-0 items-start justify-start">
                 <div className="p-4 md:p-6">
-                  <div className="flex flex-wrap gap-3">
-                    <a
-                      href={
-                        videoId
-                          ? `https://www.youtube.com/watch?v=${videoId}`
-                          : `https://www.youtube.com/channel/${process.env.NEXT_PUBLIC_CHANNEL_ID ?? ""}/live`
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn-primary"
-                    >
-                      Watch on YouTube
-                    </a>
-                    {videoId && (
-                      <button onClick={() => setShowIframe(true)} className="btn-ghost">
-                        {resume && resume > 15 ? `Resume in Page (${formatTime(resume)})` : "Play in Page"}
-                      </button>
-                    )}
-                    {videoId && resume && resume > 15 && (
-                      <a
-                        href={`https://www.youtube.com/watch?v=${videoId}&t=${resume}s`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="btn-ghost"
-                      >
-                        Resume on YouTube ({formatTime(resume)})
-                      </a>
-                    )}
-                  </div>
+                  <div className="flex flex-wrap gap-3">{topButtons}</div>
                 </div>
               </div>
             </>
@@ -128,6 +144,10 @@ export default function WatchPage() {
             />
           )}
         </div>
+
+        {/* Mobile buttons below poster */}
+        {!showIframe && <div className="sm:hidden p-4 flex flex-wrap gap-3">{topButtons}</div>}
+
         <div className="p-5 border-t border-white/10 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-4">
             <p className="text-white/90 font-medium">{data?.live ? "Live Stream" : "Latest Sermon"}</p>
