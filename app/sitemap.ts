@@ -1,0 +1,1 @@
+export default function sitemap(){const o=process.env.NEXT_PUBLIC_SITE_URL||'https://allenwmoorejr.org';const p=['/','/watch','/sermons','/events','/beliefs','/pastor','/prayer','/give'];const now=new Date().toISOString();return p.map(x=>({url:o+x,lastModified:now,changeFrequency:'weekly',priority:x==='/'?1:0.7}))}
