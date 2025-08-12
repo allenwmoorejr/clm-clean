@@ -1,1 +1,28 @@
-import './globals.css';import {Header} from '@/components/Header';import {Footer} from '@/components/Footer';import {AnnouncementsBar} from '@/components/AnnouncementsBar';import { LiveTakeover } from '@/components/LiveTakeover';import PWA from '@/components/PWA';export const metadata={title:'Christ Like Ministries — Live & Sermons',description:'Watch live and explore sermon videos from CLM',openGraph:{title:'Christ Like Ministries — Live & Sermons',description:'Join us Sundays at 10:00am CT and browse past messages.',url:process.env.NEXT_PUBLIC_SITE_URL||'https://allenwmoorejr.org',siteName:'CLM',images:[{url:'/api/og?title=Christ+Like+Ministries&subtitle=Live+Sundays+10:00am+CT'}],locale:'en_US',type:'website'},twitter:{card:'summary_large_image',title:'CLM',description:'Live and sermons from CLM'}};export default function RootLayout({children}:{children:React.ReactNode}){return(<html lang='en'><head><link rel='manifest' href='/manifest.webmanifest'/><meta name='theme-color' content='#0b1020'/></head><body><AnnouncementsBar/><LiveTakeover/><div className='min-h-screen flex flex-col'><Header/><main className='flex-1'>{children}</main><Footer/></div><a href={process.env.NEXT_PUBLIC_GIVING_URL||'/give'} className='sticky-cta btn-primary'>Give</a><PWA/></body></html>)}
+// app/layout.tsx
+import "./globals.css";
+import type { Metadata } from "next";
+import { ReactNode } from "react";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { AnnouncementsBar } from "@/components/AnnouncementsBar";
+import { LiveTakeover } from "@/components/LiveTakeover";
+import PWA from "@/components/PWA";
+
+export const metadata: Metadata = {
+  // 👇 This removes the warnings and makes OG/Twitter URLs absolute
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://allenwmoorejr.org"),
+
+  title: "Christ Like Ministries — Live & Sermons",
+  description: "Watch live and explore sermon videos from Christ Like Ministries (CLM).",
+  openGraph: {
+    title: "Christ Like Ministries — Live & Sermons",
+    description: "Join us Sundays at 10:00am CT and browse past messages.",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://allenwmoorejr.org",
+    siteName: "CLM",
+    images: [{ url: "/api/og?title=Christ+Like+Ministries&subtitle=Live+Sundays+10:00am+CT" }],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: { card: "summary_large_image", title: "CLM", description: "Live and sermons from CLM" },
+};
+
