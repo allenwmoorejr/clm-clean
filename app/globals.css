@@ -1,5 +1,33 @@
-/* === Fancy add-ons === */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+/* --- Theme background (original look) --- */
+:root { --bg: #0b1020; }
+html, body {
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(99,102,241,0.25), transparent),
+    radial-gradient(1000px 500px at 80% 10%, rgba(20,184,166,0.20), transparent),
+    var(--bg);
+  color: white;
+}
+
+/* --- Reusable utilities we used earlier --- */
+a { @apply text-brand-500; }
+.container { @apply mx-auto px-4 sm:px-6 lg:px-8; }
+.card { @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl shadow-glow; }
+.btn-primary { @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-600 hover:bg-brand-500 transition px-5 py-3 font-medium shadow-glow; }
+.btn-ghost { @apply inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 hover:bg-white/5 transition px-5 py-3 font-medium; }
+.badge { @apply inline-flex items-center gap-1 rounded-full bg-white/10 px-2.5 py-1 text-xs; }
+h1,h2,h3 { @apply font-semibold tracking-tight; }
+h1 { @apply text-4xl sm:text-5xl md:text-6xl; }
+h2 { @apply text-3xl sm:text-4xl; }
+h3 { @apply text-2xl; }
+.sticky-cta { @apply fixed right-4 bottom-4 z-50; }
+.live-takeover { @apply fixed top-0 left-0 right-0 z-50; }
+.live-bar { @apply bg-red-600 text-white; }
+
+/* === Fancy add-ons === */
 /* Headline gradient shimmer */
 .gradient-title{
   background-image: linear-gradient(90deg,#fff, #a5b4fc 30%, #22d3ee 60%, #fff 90%);
@@ -33,7 +61,7 @@
   to{ width:240px;height:240px; opacity:0; }
 }
 
-/* Hide horizontal scrollbar track for the sermon rail (visual nicety) */
+/* Hide horizontal scrollbar track for the sermon rail */
 .hide-scroll::-webkit-scrollbar{ display:none; }
 .hide-scroll{ -ms-overflow-style:none; scrollbar-width:none; }
 

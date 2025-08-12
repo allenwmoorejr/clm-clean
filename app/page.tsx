@@ -86,8 +86,9 @@ export default function HomePage() {
   return (
     <div>
       {/* HERO */}
-      <section className="container py-16" ref={heroRef}>
+      <section className="container py-16 relative" ref={heroRef}>
         {/* subtle particles backdrop */}
+        <Particles className="pointer-events-none absolute inset-0 -z-10 opacity-40" />
         <div className="relative">
           <Particles className="pointer-events-none absolute -inset-x-6 -top-10 -bottom-10 opacity-50" />
         </div>
