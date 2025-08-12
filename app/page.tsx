@@ -19,57 +19,52 @@ const stagger = { animate: { transition: { staggerChildren: 0.08, delayChildren:
 
 export default function HomePage() {
   const [live, setLive] = useState<LiveData | null>(null);
-  const [heroSrc, setHeroSrc] = useState("/live-preview.jpg");
+  const [heroSrc, setHeroSrc] = useState("/pastor-hero.jpg"); // 👈 curated default (pastor)
   const [videos, setVideos] = useState<Video[]>([]);
   const [loadingVideos, setLoadingVideos] = useState(true);
   const [countdown, setCountdown] = useState(() => countdownParts(nextServiceDate()));
 
-  // --- Parallax for glow ---
+  // Parallax glow
   const heroRef = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const parallaxY = useTransform(scrollYProgress, [0, 1], [0, 80]);
 
-  // --- Pointer tilt state (desktop only) ---
+  // Desktop tilt
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [enableTilt, setEnableTilt] = useState(false);
   useEffect(() => {
     setEnableTilt(window.matchMedia?.("(pointer: fine)").matches ?? false);
   }, []);
-
-  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+  function onMove(e: React.MouseEvent<HTMLDivElement>) {
     if (!enableTilt) return;
-    const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width;  // 0..1
-    const py = (e.clientY - rect.top) / rect.height;  // 0..1
-    const max = 6; // degrees
-    const rx = (py - 0.5) * -2 * max; // rotateX
-    const ry = (px - 0.5) * 2 * max;  // rotateY
-    setTilt({ x: rx, y: ry });
+    const r = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+    const max = 6;
+    setTilt({ x: (py - 0.5) * -2 * max, y: (px - 0.5) * 2 * max });
   }
-  function resetTilt() {
-    setTilt({ x: 0, y: 0 });
-  }
+  const resetTilt = () => setTilt({ x: 0, y: 0 });
 
   useEffect(() => {
     fetch("/api/live")
-      .then((r) => r.json())
+      .then(r => r.json())
       .then((d: LiveData) => {
         setLive(d);
-        const id = d?.live ? d.videoId : d?.latestId;
-        if (id) {
+        // If LIVE, swap to the live video thumbnail; otherwise stay on curated pastor image
+        if (d?.live && d.videoId) {
           const test = new Image();
-          test.onload = () => setHeroSrc(`https://i.ytimg.com/vi/${id}/maxresdefault.jpg`);
-          test.onerror = () => setHeroSrc(`https://i.ytimg.com/vi/${id}/hqdefault.jpg`);
-          test.src = `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
+          test.onload = () => setHeroSrc(`https://i.ytimg.com/vi/${d.videoId}/maxresdefault.jpg`);
+          test.onerror = () => setHeroSrc(`https://i.ytimg.com/vi/${d.videoId}/hqdefault.jpg`);
+          test.src = `https://i.ytimg.com/vi/${d.videoId}/maxresdefault.jpg`;
         } else {
-          setHeroSrc("/live-preview.jpg");
+          setHeroSrc("/pastor-hero.jpg");
         }
       })
-      .catch(() => {});
+      .catch(() => { /* keep curated */ });
 
     fetch("/api/videos?limit=12")
-      .then((r) => r.json())
-      .then((d) => setVideos(d.items || []))
+      .then(r => r.json())
+      .then(d => setVideos(d.items || []))
       .catch(() => setVideos([]))
       .finally(() => setLoadingVideos(false));
 
@@ -88,99 +83,63 @@ export default function HomePage() {
       {/* HERO */}
       <section className="container py-16" ref={heroRef}>
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left side copy */}
+          {/* Copy column */}
           <motion.div variants={stagger} initial="initial" whileInView="animate" viewport={{ once: true }}>
             <motion.div {...fadeUp} className="flex items-center gap-3">
-              <span
-                className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full ${
-                  live?.live ? "bg-red-500/20 text-red-300" : "bg-white/10 text-white/70"
-                }`}
-              >
+              <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full ${live?.live ? "bg-red-500/20 text-red-300" : "bg-white/10 text-white/70"}`}>
                 <span className={`w-2 h-2 rounded-full ${live?.live ? "bg-red-400 animate-pulse" : "bg-white/40"}`} />
                 {live?.live ? "LIVE" : "Offline"}
               </span>
             </motion.div>
 
-            <motion.h1
-              {...fadeUp}
-              transition={{ ...fadeUp.transition, delay: 0.05 }}
-              className="mt-4 text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight"
-            >
+            <motion.h1 {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.05 }} className="mt-4 text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight">
               Join us Sundays at 10:00am
             </motion.h1>
 
-            <motion.p
-              {...fadeUp}
-              transition={{ ...fadeUp.transition, delay: 0.1 }}
-              className="mt-6 text-white/80 max-w-2xl"
-            >
-              Teaching saved people how to stay saved — and sharing Jesus with the world. Watch live, explore past sermons,
-              or send a prayer request.
+            <motion.p {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.1 }} className="mt-6 text-white/80 max-w-2xl">
+              Teaching saved people how to stay saved — and sharing Jesus with the world. Watch live, explore past sermons, or send a prayer request.
             </motion.p>
 
-            <motion.div
-              {...fadeUp}
-              transition={{ ...fadeUp.transition, delay: 0.18 }}
-              className="mt-6 flex flex-wrap gap-3 text-white/80"
-            >
+            <motion.div {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.18 }} className="mt-6 flex flex-wrap gap-3 text-white/80">
               <span className="badge"><CalendarDays size={14} /> Sundays · 10:00am CT</span>
               <span className="badge"><Radio size={14} /> WJLD 1400 AM · 1–2pm</span>
               <span className="badge"><MapPin size={14} /> Birmingham, AL</span>
             </motion.div>
 
-            <motion.div
-              {...fadeUp}
-              transition={{ ...fadeUp.transition, delay: 0.26 }}
-              className="mt-8 flex flex-wrap gap-3"
-            >
+            <motion.div {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.26 }} className="mt-8 flex flex-wrap gap-3">
               <Link href="/watch" className="btn-primary"><PlayCircle size={18} /> Watch Live</Link>
               <Link href="/sermons" className="btn-ghost">Sermon Library</Link>
               <a href="/prayer" className="btn-ghost">Prayer Request</a>
             </motion.div>
 
             {!live?.live && (
-              <motion.p
-                {...fadeUp}
-                transition={{ ...fadeUp.transition, delay: 0.34 }}
-                className="mt-5 text-white/70 text-sm"
-              >
+              <motion.p {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.34 }} className="mt-5 text-white/70 text-sm">
                 Next service: <strong>{nextSvc.toLocaleString()}</strong> · {countdown.days}d {countdown.hours}h {countdown.minutes}m
               </motion.p>
             )}
           </motion.div>
 
-          {/* Right side visual: Ken Burns + Tilt */}
+          {/* Visual: Ken Burns + Tilt + Glow + Shine, CTAs moved to TOP-LEFT to avoid faces */}
           <motion.div
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.12 }}
             className="card overflow-hidden relative"
-            onMouseMove={handleMouseMove}
+            onMouseMove={onMove}
             onMouseLeave={resetTilt}
-            style={{
-              perspective: 1000,
-              willChange: "transform",
-              transformStyle: "preserve-3d",
-            }}
+            style={{ perspective: 1000, transformStyle: "preserve-3d" }}
           >
             {/* Parallax glow */}
-            <motion.div
-              style={{ y: parallaxY }}
-              className="absolute -inset-8 -z-10 rounded-[40px] blur-3xl opacity-30"
-            >
+            <motion.div style={{ y: parallaxY }} className="absolute -inset-8 -z-10 rounded-[40px] blur-3xl opacity-30">
               <div className="h-full w-full bg-gradient-to-tr from-brand-600 to-cyan-400/40 rounded-[40px]" />
             </motion.div>
 
-            {/* Tilted inner container */}
+            {/* Tilt container */}
             <motion.div
-              style={{
-                transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-                transformStyle: "preserve-3d",
-                willChange: "transform",
-              }}
+              style={{ transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`, transformStyle: "preserve-3d" }}
               transition={{ type: "spring", stiffness: 200, damping: 20 }}
               className="aspect-video relative"
             >
-              {/* Ken Burns: slow zoom in & out */}
+              {/* Ken Burns slow zoom */}
               <motion.img
                 key={heroSrc}
                 src={heroSrc}
@@ -189,13 +148,30 @@ export default function HomePage() {
                 initial={{ scale: 1.02 }}
                 animate={{ scale: 1.08 }}
                 transition={{ duration: 18, repeat: Infinity, repeatType: "mirror", ease: "linear" }}
-                style={{ transformOrigin: "50% 60%" }}
+                style={{ transformOrigin: "50% 45%" }}
               />
+
+              {/* Shine sweep */}
+              <motion.div className="absolute inset-0 pointer-events-none">
+                <motion.div
+                  className="absolute top-0 bottom-0 w-1/3 bg-gradient-to-r from-white/10 via-white/5 to-transparent"
+                  initial={{ x: "-40%" }}
+                  animate={{ x: "140%" }}
+                  transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+                  style={{ transform: "translateZ(8px)" }}
+                />
+              </motion.div>
+
+              {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-              <div className="absolute inset-0 flex items-end p-4 md:p-6" style={{ transform: "translateZ(20px)" }}>
-                <div className="flex flex-wrap gap-3">
-                  <a href={watchHref} target="_blank" rel="noreferrer" className="btn-primary">Watch on YouTube</a>
-                  <Link href="/watch" className="btn-ghost">Open Watch Page</Link>
+
+              {/* CTAs top-left so they never cover faces */}
+              <div className="absolute inset-0 flex items-start justify-start">
+                <div className="p-4 md:p-6" style={{ transform: "translateZ(20px)" }}>
+                  <div className="flex flex-wrap gap-3">
+                    <a href={watchHref} target="_blank" rel="noreferrer" className="btn-primary">Watch on YouTube</a>
+                    <Link href="/watch" className="btn-ghost">Open Watch Page</Link>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -235,13 +211,7 @@ export default function HomePage() {
           <Link href="/sermons" className="text-white/70 hover:text-white text-sm">View all</Link>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 24 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.55 }}
-          viewport={{ once: true }}
-          className="mt-6 overflow-x-auto"
-        >
+        <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.55 }} viewport={{ once: true }} className="mt-6 overflow-x-auto">
           <div className="flex gap-4 min-w-full pr-2">
             {loadingVideos && <div className="text-white/60 text-sm">Loading sermons…</div>}
             {!loadingVideos && videos.length === 0 && <div className="text-white/60 text-sm">No videos found yet.</div>}
