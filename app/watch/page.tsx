@@ -1,1 +1,157 @@
-"use client";import {useEffect,useMemo,useRef,useState} from 'react';import Link from 'next/link';export default function Watch(){const[d,sD]=useState(null as any);const[show,sShow]=useState(false);const[p,sP]=useState(0);const[resume,sR]=useState(null as any);const t=useRef(null as any);useEffect(()=>{fetch('/api/live').then(r=>r.json()).then(sD).catch(()=>sD({live:false}))},[]);const id=d?.live?d.videoId:d?.latestId;useEffect(()=>{if(!id)return;const raw=localStorage.getItem(`yt-progress-${id}`);if(raw){try{const v=JSON.parse(raw);if(typeof v.seconds==='number')sR(v.seconds)}catch{}}},[id]);useEffect(()=>{if(!show||!id)return;t.current=setInterval(()=>{sP(x=>{const n=x+1;if(n%5===0)localStorage.setItem(`yt-progress-${id}`,JSON.stringify({seconds:n,at:Date.now()}));return n})},1000);return()=>clearInterval(t.current)},[show,id]);const share=useMemo(()=>{if(!id)return'';const sec=resume??p;return `https://www.youtube.com/watch?v=${id}${sec>0?`&t=${sec}s`:''}`},[id,p,resume]);return(<section className='container py-16'><h1>{d?.live?'We’re Live Now':'Watch'}</h1><p className='text-white/70 mt-2'>{d?.live?'Thanks for worshiping with us!':'We’re not live right now — enjoy the latest message below.'}</p><div className='card overflow-hidden mt-8 relative'><div className='aspect-video relative'>{!show?(<><img src='/live-preview.jpg' className='w-full h-full object-cover'/><div className='absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent'/><div className='absolute inset-0 flex items-end justify-start'><div className='p-4 md:p-6'><div className='flex flex-wrap gap-3'><a href={id?`https://www.youtube.com/watch?v=${id}`:`https://www.youtube.com/channel/${process.env.NEXT_PUBLIC_CHANNEL_ID??''}/live`} target='_blank' rel='noreferrer' className='btn-primary'>Watch on YouTube</a>{id&&(<button onClick={()=>sShow(true)} className='btn-ghost'>{resume&&resume>15?`Resume in Page (${Math.floor(resume/60)}:${String(resume%60).padStart(2,'0')})`:'Play in Page'}</button>)}{id&&resume&&resume>15&&(<a href={`https://www.youtube.com/watch?v=${id}&t=${resume}s`} target='_blank' rel='noreferrer' className='btn-ghost'>Resume on YouTube</a>)}</div></div></div></>):(<iframe className='w-full h-full' src={`https://www.youtube.com/embed/${id}?autoplay=1&modestbranding=1&rel=0`} title='CLM Live' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowFullScreen/>)}</div><div className='p-5 border-t border-white/10 flex items-center justify-between flex-wrap gap-3'><div className='flex items-center gap-4'><p className='text-white/90 font-medium'>{d?.live?'Live Stream':'Latest Sermon'}</p>{show&&<span className='text-white/60 text-sm'>Playing — {Math.floor(p/60)}:{String(p%60).padStart(2,'0')}</span>}</div><div className='flex items-center gap-3'>{id&&(<button onClick={()=>{navigator.clipboard?.writeText(share)}} className='btn-ghost' title='Copy a link that starts at the current time'>Copy timestamp link</button>)}<Link href='/sermons' className='btn-primary'>Browse Sermons</Link></div></div></div></section>)}
+// app/watch/page.tsx
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+
+type LiveResponse = { live: boolean; videoId?: string; latestId?: string };
+
+function formatTime(seconds: number) {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+export default function WatchPage() {
+  const [data, setData] = useState<LiveResponse | null>(null);
+  const [showIframe, setShowIframe] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [resume, setResume] = useState<number | null>(null);
+  const [poster, setPoster] = useState("/live-preview.jpg");
+  const timerRef = useRef<any>(null);
+
+  useEffect(() => {
+    fetch("/api/live")
+      .then((r) => r.json())
+      .then((d: LiveResponse) => setData(d))
+      .catch(() => setData({ live: false }));
+  }, []);
+
+  const videoId = data?.live ? data.videoId : data?.latestId;
+
+  // Choose the best thumbnail once we know the ID
+  useEffect(() => {
+    if (!videoId) return;
+    const test = new Image();
+    test.onload = () => setPoster(`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`);
+    test.onerror = () => setPoster(`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`);
+    test.src = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
+  }, [videoId]);
+
+  // Resume progress (stored locally)
+  useEffect(() => {
+    if (!videoId) return;
+    const raw = localStorage.getItem(`yt-progress-${videoId}`);
+    if (raw) {
+      try {
+        const v = JSON.parse(raw);
+        if (typeof v.seconds === "number") setResume(v.seconds);
+      } catch {}
+    }
+  }, [videoId]);
+
+  // Increment progress while iframe is shown
+  useEffect(() => {
+    if (!showIframe || !videoId) return;
+    timerRef.current = setInterval(() => {
+      setProgress((p) => {
+        const next = p + 1;
+        if (next % 5 === 0) {
+          localStorage.setItem(`yt-progress-${videoId}`, JSON.stringify({ seconds: next, at: Date.now() }));
+        }
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(timerRef.current);
+  }, [showIframe, videoId]);
+
+  const shareUrl = useMemo(() => {
+    if (!videoId) return "";
+    const t = resume ?? progress;
+    return `https://www.youtube.com/watch?v=${videoId}${t > 0 ? `&t=${t}s` : ""}`;
+  }, [videoId, progress, resume]);
+
+  return (
+    <section className="container py-16">
+      <h1>{data?.live ? "We’re Live Now" : "Watch"}</h1>
+      <p className="text-white/70 mt-2">
+        {data?.live ? "Thanks for worshiping with us!" : "We’re not live right now — enjoy the latest message below."}
+      </p>
+
+      <div className="card overflow-hidden mt-8 relative">
+        <div className="aspect-video relative">
+          {!showIframe ? (
+            <>
+              <img src={poster} alt="CLM Live Preview" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+              <div className="absolute inset-0 flex items-end justify-start">
+                <div className="p-4 md:p-6">
+                  <div className="flex flex-wrap gap-3">
+                    <a
+                      href={
+                        videoId
+                          ? `https://www.youtube.com/watch?v=${videoId}`
+                          : `https://www.youtube.com/channel/${process.env.NEXT_PUBLIC_CHANNEL_ID ?? ""}/live`
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn-primary"
+                    >
+                      Watch on YouTube
+                    </a>
+                    {videoId && (
+                      <button onClick={() => setShowIframe(true)} className="btn-ghost">
+                        {resume && resume > 15 ? `Resume in Page (${formatTime(resume)})` : "Play in Page"}
+                      </button>
+                    )}
+                    {videoId && resume && resume > 15 && (
+                      <a
+                        href={`https://www.youtube.com/watch?v=${videoId}&t=${resume}s`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn-ghost"
+                      >
+                        Resume on YouTube ({formatTime(resume)})
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <iframe
+              className="w-full h-full"
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0`}
+              title="CLM Live"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          )}
+        </div>
+        <div className="p-5 border-t border-white/10 flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-4">
+            <p className="text-white/90 font-medium">{data?.live ? "Live Stream" : "Latest Sermon"}</p>
+            {showIframe && <span className="text-white/60 text-sm">Playing — {formatTime(progress)}</span>}
+          </div>
+          <div className="flex items-center gap-3">
+            {videoId && (
+              <button
+                onClick={() => {
+                  navigator.clipboard?.writeText(shareUrl);
+                }}
+                className="btn-ghost"
+                title="Copy a link that starts at the current time"
+              >
+                Copy timestamp link
+              </button>
+            )}
+            <Link href="/sermons" className="btn-primary">
+              Browse Sermons
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
