@@ -64,4 +64,12 @@ h3 { @apply text-2xl; }
 /* Hide horizontal scrollbar track for the sermon rail */
 .hide-scroll::-webkit-scrollbar{ display:none; }
 .hide-scroll{ -ms-overflow-style:none; scrollbar-width:none; }
+/* Safe-area padding for floating CTA on iOS */
+.sticky-cta {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 1rem);
+  right:  calc(env(safe-area-inset-right, 0px) + 1rem);
+}
+
+/* Ensure images don't overflow on tiny screens */
+img { max-width: 100%; height: auto; }
 

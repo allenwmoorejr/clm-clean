@@ -86,10 +86,10 @@ export default function HomePage() {
   return (
     <div>
       {/* HERO */}
-      <section className="container py-16 relative" ref={heroRef}>
+      <section className="container py-12 sm:py-16 relative" ref={heroRef}>
         {/* subtle particles backdrop */}
-        <Particles className="pointer-events-none absolute inset-0 -z-10 opacity-40" />
-        <div className="relative">
+        <Particles className="pointer-events-none absolute inset-0 -z-10 opacity-30" />
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <Particles className="pointer-events-none absolute -inset-x-6 -top-10 -bottom-10 opacity-50" />
         </div>
 
@@ -198,17 +198,29 @@ export default function HomePage() {
           <Link href="/sermons" className="text-white/70 hover:text-white text-sm">View all</Link>
         </div>
 
-        <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.55 }} viewport={{ once: true }}
-          className="mt-6 overflow-x-auto hide-scroll"
-          ref={railRef} onMouseEnter={()=>hoverRef.current=true} onMouseLeave={()=>hoverRef.current=false}>
+        <motion.div
+          initial={{ opacity: 0, x: 24 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.55 }}
+          viewport={{ once: true }}
+          className="mt-6 overflow-x-auto hide-scroll snap-x snap-mandatory px-1"
+          ref={railRef}
+          onMouseEnter={() => (hoverRef.current = true)}
+          onMouseLeave={() => (hoverRef.current = false)}
+          onTouchStart={() => (hoverRef.current = true)}
+          onTouchEnd={() => (hoverRef.current = false)}
+        >
           <div className="flex gap-4 min-w-full pr-2">
-            {loadingVideos && <div className="text-white/60 text-sm">Loading sermons…</div>}
-            {!loadingVideos && videos.length===0 && <div className="text-white/60 text-sm">No videos found yet.</div>}
-            {videos.map((v)=>(
-              <motion.a key={v.id} href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noreferrer"
-                className="card overflow-hidden w-[290px] shrink-0 group"
-                whileHover={{ scale: 1.01 }} transition={{ type:"spring", stiffness:300, damping:20 }}>
+            {videos.map((v) => (
+              <motion.a
+                key={v.id}
+                href={`https://www.youtube.com/watch?v=${v.id}`}
+                target="_blank"
+                rel="noreferrer"
+                className="card overflow-hidden w-[76vw] xs:w-[320px] sm:w-[290px] shrink-0 group snap-start"
+                whileHover={{ scale: 1.01 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
                 <div className="aspect-video overflow-hidden">
                   <img
                     src={v.thumbnail} alt={v.title}
@@ -224,7 +236,7 @@ export default function HomePage() {
             ))}
           </div>
         </motion.div>
-      </section>
+        </section>
 
       {/* Upcoming + Radio */}
       <section className="container pb-16 grid md:grid-cols-2 gap-6">

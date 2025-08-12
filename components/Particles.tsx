@@ -1,8 +1,8 @@
+// components/Particles.tsx
 "use client";
 import { useEffect, useRef } from "react";
 
-/** Soft floating orbs behind hero (very subtle). */
-export default function Particles(props: { className?: string }){
+export default function Particles({ className }: { className?: string }) {
   const ref = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -10,6 +10,9 @@ export default function Particles(props: { className?: string }){
     const ctx = canvas.getContext("2d")!;
     let raf = 0;
     let width = 0, height = 0;
+
+    const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+    if (prefersReduced) return; // disable entirely
 
     const DPR = Math.min(2, window.devicePixelRatio || 1);
     function resize(){
@@ -20,19 +23,21 @@ export default function Particles(props: { className?: string }){
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     }
     resize();
-    const onResize = () => { resize(); };
+    const onResize = () => resize();
     window.addEventListener("resize", onResize);
 
-    // Orbs
-    const N = 12;
+    const isSmall = width < 768;          // phones/tablets
+    const N = isSmall ? 6 : 12;           // fewer orbs on small screens
+    const baseAlpha = isSmall ? 0.05 : 0.08;
+
     const orbs = Array.from({ length: N }).map(() => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      r: 40 + Math.random() * 120,
-      dx: (Math.random() - 0.5) * 0.15,
-      dy: (Math.random() - 0.5) * 0.15,
+      r: (isSmall ? 24 : 40) + Math.random() * (isSmall ? 80 : 120),
+      dx: (Math.random() - 0.5) * (isSmall ? 0.09 : 0.15),
+      dy: (Math.random() - 0.5) * (isSmall ? 0.09 : 0.15),
       hue: 220 + Math.random() * 80,
-      alpha: 0.08 + Math.random() * 0.06,
+      alpha: baseAlpha + Math.random() * (isSmall ? 0.04 : 0.06),
     }));
 
     function tick(){
@@ -59,6 +64,6 @@ export default function Particles(props: { className?: string }){
     return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", onResize); };
   }, []);
 
-  return <canvas className={props.className} ref={ref} />;
+  return <canvas className={className} ref={ref} />;
 }
 
