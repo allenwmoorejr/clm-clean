@@ -11,6 +11,10 @@ import Particles from "@/components/Particles";
 type LiveData = { live: boolean; videoId?: string; latestId?: string };
 type Video = { id: string; title: string; published: string; thumbnail: string };
 
+// refs for the sermon rail
+const railRef = useRef<HTMLDivElement | null>(null);
+const hoverRef = useRef(false);
+
 const fadeUp = { initial: { opacity: 0, y: 24 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.55, ease: [0.22,1,0.36,1] } };
 const stagger = { animate: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } } };
 
@@ -63,27 +67,31 @@ export default function HomePage() {
     ? `https://www.youtube.com/watch?v=${heroId}`
     : `https://www.youtube.com/channel/${process.env.NEXT_PUBLIC_CHANNEL_ID ?? ""}/live`;
 
-  // Sermon rail auto-scroll
-  const railRef = useRef<HTMLDivElement | null>(null);
-  const hoverRef = useRef(false);
-  useEffect(() => {
-    const el = railRef.current;
-    if(!el) return;
-    let af = 0;
-    function step(){
-      if(!hoverRef.current){
-        el.scrollLeft += 0.6; // speed
-        if (Math.ceil(el.scrollLeft) >= el.scrollWidth - el.clientWidth - 2) {
-          el.scrollTo({ left: 0, behavior: "auto" });
-        }
-      }
-      af = requestAnimationFrame(step);
-    }
-    af = requestAnimationFrame(step);
-    return ()=>cancelAnimationFrame(af);
-  }, [loadingVideos]);
+  // Sermon rail auto-scroll (safe in prod builds)
+    // Sermon rail auto-scroll (safe in prod builds)
+    useEffect(() => {
+      const element = railRef.current as HTMLDivElement | null;
+      if (!element) return; // bail if not mounted
 
-  return (
+      const el: HTMLDivElement = element; // lock non-null for closure
+      let rafId = 0;
+
+      const step = () => {
+        if (!hoverRef.current) {
+          el.scrollLeft += 0.6; // speed
+          if (Math.ceil(el.scrollLeft) >= el.scrollWidth - el.clientWidth - 2) {
+            el.scrollTo({ left: 0, behavior: "auto" });
+          }
+        }
+        rafId = requestAnimationFrame(step);
+      };
+
+      rafId = requestAnimationFrame(step);
+      return () => cancelAnimationFrame(rafId);
+    }, [loadingVideos]);
+
+
+return (
     <div>
       {/* HERO */}
       <section className="container py-12 sm:py-16 relative" ref={heroRef}>
