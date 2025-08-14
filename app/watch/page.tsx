@@ -1,8 +1,8 @@
-// app/watch/page.tsx
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import NextImage from "next/image"; // 👈 alias so we don't shadow window.Image
 
 type LiveResponse = { live: boolean; videoId?: string; latestId?: string };
 
@@ -17,10 +17,9 @@ export default function WatchPage() {
   const [showIframe, setShowIframe] = useState(false);
   const [progress, setProgress] = useState(0);
   const [resume, setResume] = useState<number | null>(null);
-  const [poster, setPoster] = useState("/pastor-hero.jpg"); // curated default
+  const [poster, setPoster] = useState("/pastor-hero.jpg");
   const timerRef = useRef<any>(null);
 
-  // fetch live/latest
   useEffect(() => {
     fetch("/api/live")
       .then((r) => r.json())
@@ -30,13 +29,13 @@ export default function WatchPage() {
 
   const videoId = data?.live ? data.videoId : data?.latestId;
 
-  // update poster from videoId (with maxres -> hq fallback)
   useEffect(() => {
     if (!videoId) {
       setPoster("/pastor-hero.jpg");
       return;
     }
-    const test = new Image();
+    // 👇 use the browser's Image constructor, not the Next component
+    const test = new window.Image();
     test.onload = () =>
       setPoster(`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`);
     test.onerror = () =>
@@ -44,7 +43,6 @@ export default function WatchPage() {
     test.src = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
   }, [videoId]);
 
-  // load saved resume position
   useEffect(() => {
     if (!videoId) return;
     const raw = localStorage.getItem(`yt-progress-${videoId}`);
@@ -56,7 +54,6 @@ export default function WatchPage() {
     }
   }, [videoId]);
 
-  // basic in-page progress timer (for share timestamp)
   useEffect(() => {
     if (!showIframe || !videoId) return;
     timerRef.current = setInterval(() => {
@@ -77,7 +74,9 @@ export default function WatchPage() {
   const shareUrl = useMemo(() => {
     if (!videoId) return "";
     const t = resume ?? progress;
-    return `https://www.youtube.com/watch?v=${videoId}${t > 0 ? `&t=${t}s` : ""}`;
+    return `https://www.youtube.com/watch?v=${videoId}${
+      t > 0 ? `&t=${t}s` : ""
+    }`;
   }, [videoId, progress, resume]);
 
   const topButtons = (
@@ -86,7 +85,9 @@ export default function WatchPage() {
         href={
           videoId
             ? `https://www.youtube.com/watch?v=${videoId}`
-            : `https://www.youtube.com/channel/${process.env.NEXT_PUBLIC_CHANNEL_ID ?? ""}/live`
+            : `https://www.youtube.com/channel/${
+                process.env.NEXT_PUBLIC_CHANNEL_ID ?? ""
+              }/live`
         }
         target="_blank"
         rel="noreferrer"
@@ -96,7 +97,9 @@ export default function WatchPage() {
       </a>
       {videoId && (
         <button onClick={() => setShowIframe(true)} className="btn-ghost">
-          {resume && resume > 15 ? `Resume in Page (${formatTime(resume)})` : "Play in Page"}
+          {resume && resume > 15
+            ? `Resume in Page (${formatTime(resume)})`
+            : "Play in Page"}
         </button>
       )}
       {videoId && resume && resume > 15 && (
@@ -125,9 +128,14 @@ export default function WatchPage() {
         <div className="aspect-video relative">
           {!showIframe ? (
             <>
-              <img src={poster} alt="CLM Live Preview" className="w-full h-full object-cover" />
+              <NextImage
+                src={poster}
+                alt="CLM Live Preview"
+                fill
+                className="object-cover"
+                sizes="100vw"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-              {/* Desktop/tablet overlay */}
               <div className="hidden sm:flex absolute inset-0 items-start justify-start">
                 <div className="p-4 md:p-6">
                   <div className="flex flex-wrap gap-3">{topButtons}</div>
@@ -144,14 +152,19 @@ export default function WatchPage() {
             />
           )}
         </div>
-
-        {/* Mobile buttons below poster */}
-        {!showIframe && <div className="sm:hidden p-4 flex flex-wrap gap-3">{topButtons}</div>}
-
+        {!showIframe && (
+          <div className="sm:hidden p-4 flex flex-wrap gap-3">{topButtons}</div>
+        )}
         <div className="p-5 border-t border-white/10 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-4">
-            <p className="text-white/90 font-medium">{data?.live ? "Live Stream" : "Latest Sermon"}</p>
-            {showIframe && <span className="text-white/60 text-sm">Playing — {formatTime(progress)}</span>}
+            <p className="text-white/90 font-medium">
+              {data?.live ? "Live Stream" : "Latest Sermon"}
+            </p>
+            {showIframe && (
+              <span className="text-white/60 text-sm">
+                Playing — {formatTime(progress)}
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-3">
             {videoId && (

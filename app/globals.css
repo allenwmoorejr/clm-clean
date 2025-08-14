@@ -102,4 +102,29 @@ h3 { @apply text-2xl; }
 
 /* Ensure images don't overflow on tiny screens */
 img { max-width: 100%; height: auto; }
+/* ----- Fluid headings (desktop <-> phone) ----- */
+:root{
+  --h1: clamp(2rem, 1.4rem + 2.5vw, 3.5rem);
+  --h2: clamp(1.625rem, 1.2rem + 1.6vw, 2.5rem);
+  --h3: clamp(1.25rem, 1.05rem + 0.9vw, 1.75rem);
+}
+h1 { font-size: var(--h1); }
+h2 { font-size: var(--h2); }
+h3 { font-size: var(--h3); }
 
+/* ----- Roomy, predictable containers ----- */
+.container {
+  max-width: min(92rem, 95vw); /* ~1472px max, with padding intact */
+}
+
+/* ----- Bigger tap targets on mobile (44px min) ----- */
+.tap-target { min-height: 44px; min-width: 44px; }
+
+/* ----- Respect iOS safe areas (if used anywhere sticky) ----- */
+.safe-top    { padding-top: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+/* Optional: tighten card padding on the smallest phones */
+@media (max-width: 360px){
+  .card { border-radius: 1rem; }
+}

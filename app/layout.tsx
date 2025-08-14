@@ -58,4 +58,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+// app/layout.tsx
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",      // use the full screen on iOS notch devices
+  themeColor: "#0b1020",
+};
 
