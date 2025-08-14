@@ -51,6 +51,28 @@ h3 { @apply text-2xl; }
 .btn-primary:active, .btn-ghost:active{
   transform: translateY(1px) scale(0.99);
 }
+
+/* Lightning flash animation */
+@keyframes lightning-flash {
+  0%   { opacity: 0.75; }
+  60%  { opacity: 0.15; }
+  100% { opacity: 0; }
+}
+.animate-lightning-flash {
+  animation: lightning-flash 220ms ease-out forwards;
+}
+
+
+/* Subtle readability mask over scenery */
+.scenery-mask{
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1000px 600px at 50% -10%, rgba(11,16,32,0.0), rgba(11,16,32,0.30)),
+    linear-gradient(to bottom, rgba(11,16,32,0.30), rgba(11,16,32,0.80) 60%, rgba(11,16,32,0.90));
+  mix-blend-mode: normal;
+}
+
 .ripple{
   position:absolute; border-radius:9999px; pointer-events:none;
   transform: translate(-50%,-50%); opacity:.35; background:#fff;

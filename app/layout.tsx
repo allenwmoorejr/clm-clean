@@ -3,12 +3,15 @@ import UXEffects from "@/components/UXEffects";
 import "./globals.css";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-
+import Scenery from "@/components/Scenery";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AnnouncementsBar } from "@/components/AnnouncementsBar";
 import { LiveTakeover } from "@/components/LiveTakeover";
 import PWA from "@/components/PWA";
+import WelcomeIntro from "@/components/WelcomeIntro";
+import Lightning from "@/components/Lightning";
+
 
 // ✅ Set a proper absolute base for OG/Twitter URLs
 export const metadata: Metadata = {
@@ -32,25 +35,23 @@ export const metadata: Metadata = {
 };
 
 // ✅ Server component layout signature (NO "use client" here)
-export default function RootLayout({ children }: { children: ReactNode }) {
+// …
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      {/* Head tags are OK in app router; using metadata for most settings */}
-      <head>
-        <link rel="manifest" href="/manifest.webmanifest" />
-        <meta name="theme-color" content="#0b1020" />
-      </head>
+      <head>{/* … */}</head>
       <body>
+        <Scenery />
+        <Lightning />  {/* ⚡️ subtle, random strikes behind content */}
         <AnnouncementsBar />
         <LiveTakeover />
-        <div className="min-h-screen flex flex-col">
+        <div className="relative z-20 min-h-screen flex flex-col"> 
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
         </div>
-        <a href={process.env.NEXT_PUBLIC_GIVING_URL || "/give"} className="sticky-cta btn-primary">
-          Give
-        </a>
+        <a href={process.env.NEXT_PUBLIC_GIVING_URL || "/give"} className="sticky-cta btn-primary">Give</a>
         <PWA />
         <UXEffects />
       </body>
