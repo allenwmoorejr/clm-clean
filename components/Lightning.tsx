@@ -43,7 +43,7 @@ export default function Lightning() {
     const saveData = (navigator as any)?.connection?.saveData ?? false;
     if (reduced || saveData) return; // respect user prefs
 
-    const scheduleNext = (minSec = 25, maxSec = 55) => {
+    const scheduleNext = (minSec = 55, maxSec = 85) => {
       const delay = (minSec + Math.random() * (maxSec - minSec)) * 1000;
       timerRef.current = window.setTimeout(() => strike(), delay) as any;
     };
