@@ -94,10 +94,29 @@ export default function HomeClient() {
           {/* Copy */}
           <motion.div variants={stagger} initial="initial" whileInView="animate" viewport={{ once: true }}>
             <motion.div {...fadeUp} className="flex items-center gap-3">
-              <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full ${live?.live ? "bg-red-500/20 text-red-300" : "bg-white/10 text-white/70"}`}>
-                <span className={`w-2 h-2 rounded-full ${live?.live ? "bg-red-400 animate-pulse" : "bg-white/40"}`} />
-                {live?.live ? "LIVE" : "Offline"}
-              </span>
+             {/* Proximity-aware status pill */}
+                {(() => {
+                  const hrs = Math.max(0, (nextServiceDate().getTime() - Date.now()) / 36e5);
+                  let dur = "0s", glow = "0", animated = false;
+                  if (hrs <= 1)   { dur = "0.85s"; glow = "0.36"; animated = true; }
+                  else if (hrs <= 6)  { dur = "1.2s";  glow = "0.28"; animated = true; }
+                  else if (hrs <= 24) { dur = "1.8s";  glow = "0.22"; animated = true; }
+                  else if (hrs <= 72) { dur = "2.7s";  glow = "0.18"; animated = true; }
+
+                  return (
+                    <span
+                      className={[
+                        "inline-flex items-center gap-1.5 px-2 py-1 rounded-full",
+                        live?.live ? "bg-red-500/20 text-red-300" : "bg-white/10 text-white/70",
+                        !live?.live && animated ? "pill-animated" : ""
+                      ].join(" ")}
+                      style={!live?.live ? ({ ["--dur" as any]: dur, ["--glow" as any]: glow } as any) : undefined}
+                    >
+                      <span className={`w-2 h-2 rounded-full ${live?.live ? "bg-red-400 animate-pulse" : "bg-white/40"}`} />
+                      {live?.live ? "LIVE" : "Offline"}
+                    </span>
+                  );
+                })()}
             </motion.div>
 
             <motion.h1 {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.05 }}
