@@ -128,3 +128,9 @@ h3 { font-size: var(--h3); }
 @media (max-width: 360px){
   .card { border-radius: 1rem; }
 }
+/* Reduce bounce revealing background beyond the page */
+html, body {
+  overscroll-behavior-y: contain;   /* Chrome/Android, most modern browsers */
+  overflow-x: hidden;               /* just in case */
+}
+

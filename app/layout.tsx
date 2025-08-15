@@ -46,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Lightning />  {/* ⚡️ subtle, random strikes behind content */}
         <AnnouncementsBar />
         <LiveTakeover />
-        <div className="relative z-20 min-h-screen flex flex-col"> 
+        <div className="relative z-20 flex flex-col min-h-[100svh] md:min-h-screen">
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />

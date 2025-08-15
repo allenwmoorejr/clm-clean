@@ -82,7 +82,7 @@ export default function Scenery() {
   }, [PLAYBACK_RATE]);
 
   return (
-    <div aria-hidden className="fixed inset-0 z-0 pointer-events-none">
+    <div aria-hidden className="absolute inset-0 z-0 pointer-events-none">
       {useVideo ? (
         <video
           ref={vidRef}
