@@ -130,7 +130,7 @@ h3 { font-size: var(--h3); }
 }
 /* Reduce bounce revealing background beyond the page */
 html, body {
-  overscroll-behavior-y: none;      /* prevent overscroll bounce on desktop */
+  overscroll-behavior-y: none;      /*  prevent overscroll bounce on desktop */
   overflow-x: hidden;               /* just in case */
   overflow-y: auto;                 /* allow normal vertical scrolling */
 }
