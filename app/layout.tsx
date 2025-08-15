@@ -11,6 +11,8 @@ import { LiveTakeover } from "@/components/LiveTakeover";
 import PWA from "@/components/PWA";
 import WelcomeIntro from "@/components/WelcomeIntro";
 import Lightning from "@/components/Lightning";
+import ScrollProgress from "@/components/ScrollProgress";
+import ScrollToTop from "@/components/ScrollToTop";
 
 
 // ✅ Set a proper absolute base for OG/Twitter URLs
@@ -44,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <Scenery />
         <Lightning />  {/* ⚡️ subtle, random strikes behind content */}
+        <ScrollProgress />
         <AnnouncementsBar />
         <LiveTakeover />
         <WelcomeIntro />
@@ -52,6 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="flex-1">{children}</main>
           <Footer />
         </div>
+        <ScrollToTop />
         <a href={process.env.NEXT_PUBLIC_GIVING_URL || "/give"} className="sticky-cta btn-primary">Give</a>
         <PWA />
         <UXEffects />
