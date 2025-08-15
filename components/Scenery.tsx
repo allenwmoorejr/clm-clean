@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 /** Cinematic background with graceful fallbacks and readability mask. */
 export default function Scenery() {
   const [useVideo, setUseVideo] = useState(true);
-  const [posterSrc, setPosterSrc] = useState("/scenery.jpg");
+  const [posterSrc, setPosterSrc] = useState("/spiritual.jpg");
   const vidRef = useRef<HTMLVideoElement | null>(null);
 
   // Tweak to taste: 0.6 ~ 40% slower; 0.5 = half speed
@@ -18,10 +18,10 @@ export default function Scenery() {
     const saveData = (navigator as any)?.connection?.saveData ?? false;
     if (reduced || saveData) setUseVideo(false);
 
-    // Fallback poster if scenery.jpg is missing
+    // Fallback poster if spiritual.jpg is missing
     const img = new Image();
     img.onerror = () => setPosterSrc("/pastor-hero.jpg");
-    img.src = "/scenery.jpg";
+    img.src = "/spiritual.jpg";
   }, []);
 
   // Ensure autoplay + slower playback
@@ -95,7 +95,7 @@ export default function Scenery() {
           preload="metadata"
           onError={() => setUseVideo(false)}
         >
-          <source src="/scenery.mp4" type="video/mp4" />
+          <source src="/spiritual.mp4" type="video/mp4" />
         </video>
       ) : (
         <img src={posterSrc} alt="" className="w-full h-full object-cover opacity-35" />
