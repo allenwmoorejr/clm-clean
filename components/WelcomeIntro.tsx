@@ -99,7 +99,7 @@ export default function WelcomeIntro() {
                 Welcome to
               </p>
               <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl font-semibold gradient-title">
-                Christ Like Ministries, Inc.
+                Christlike Ministries, Inc.
               </h1>
               <p className="mt-3 text-white/70">
                 We’re glad you’re here.
