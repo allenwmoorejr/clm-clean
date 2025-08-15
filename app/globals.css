@@ -110,10 +110,6 @@ h3 { @apply text-2xl; }
   z-index: -1;
   animation: countdown-pill-spin 8s linear infinite;
 }
-@keyframes countdown-pill-spin {
-  to { transform: rotate(1turn); }
-}
-
 
 /* Hide horizontal scrollbar track for the sermon rail */
 .hide-scroll::-webkit-scrollbar{ display:none; }
