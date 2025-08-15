@@ -130,8 +130,14 @@ h3 { font-size: var(--h3); }
 }
 /* Reduce bounce revealing background beyond the page */
 html, body {
-  overscroll-behavior-y: contain;   /* avoid scroll lock on Edge while reducing bounce */
-  overflow-x: hidden;               /* just in case */
-  overflow-y: auto;                 /* allow normal vertical scrolling */
+  overscroll-behavior-y: none;      /*  prevent overscroll bounce on desktop */
+
+}
+
+/* Edge can lock scroll on touch devices; relax overscroll there */
+@media (max-width: 768px), (pointer: coarse) {
+  html, body {
+    overscroll-behavior-y: contain; /* avoid scroll lock while still damping bounce */
+  }
 }
 
