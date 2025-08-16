@@ -35,18 +35,35 @@ export default function SermonsPage() {
           <p className="text-white/70 mt-2">Search and filter recent messages.</p>
         </div>
         <div className="flex items-center gap-3">
-          <select value={year} onChange={e=>setYear(e.target.value)} className="px-3 py-3 rounded-xl bg-white/5 border border-white/10">
-            <option value="all">All years</option>
-            {years.map(y => <option key={y} value={y}>{y}</option>)}
+          <select
+            value={year}
+            onChange={e=>setYear(e.target.value)}
+            className="px-3 py-3 rounded-xl bg-white/5 border border-white/10"
+          >
+            <option value="all" className="text-black">All years</option>
+            {years.map(y => (
+              <option key={y} value={y} className="text-black">{y}</option>
+            ))}
           </select>
-          <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search titles…" className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 outline-none focus:ring-2 ring-brand-600 min-w-[260px]" />
+          <input
+            value={q}
+            onChange={e=>setQ(e.target.value)}
+            placeholder="Search titles…"
+            className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 outline-none focus:ring-2 ring-brand-600 min-w-[260px]"
+          />
         </div>
       </div>
 
       {/* GRID restored */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
         {filtered.map(v => (
-          <a key={v.id} href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noreferrer" className="card overflow-hidden group">
+          <a
+            key={v.id}
+            href={`https://www.youtube.com/watch?v=${v.id}`}
+            target="_blank"
+            rel="noreferrer"
+            className="card overflow-hidden group"
+          >
             <div className="aspect-video overflow-hidden">
               <img
                 src={v.thumbnail}
