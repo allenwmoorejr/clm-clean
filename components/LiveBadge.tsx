@@ -51,7 +51,9 @@ export function LiveBadge() {
       </span>
 
       {!live && (
-        <span className="text-white/70">
+
+        <span className="countdown-pill text-white/70">
+
           Next: Sun 10:00am CT · {countdown.days}d {countdown.hours}h {countdown.minutes}m
         </span>
       )}
