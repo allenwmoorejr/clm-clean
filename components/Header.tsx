@@ -81,20 +81,32 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile dropdown */}
       <AnimatePresence>
         {open && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/50 md:hidden" onClick={() => setOpen(false)}>
-            <motion.div
-              initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
-              transition={{ type: "spring", stiffness: 260, damping: 26 }}
-              className="absolute right-0 top-0 bottom-0 w-80 max-w-[85%] bg-[#0b1020] border-l border-white/10 p-6 flex flex-col gap-6"
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/50 md:hidden"
+            onClick={() => setOpen(false)}
+          >
+            <motion.nav
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -20, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 260, damping: 20 }}
+              className="absolute top-16 left-4 right-4 bg-[#0b1020]/90 backdrop-blur-xl rounded-2xl border border-white/10 p-6 flex flex-col gap-6 shadow-lg"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between">
                 <span className="font-semibold">Menu</span>
-                <button aria-label="Close menu" onClick={() => setOpen(false)} className="p-2 rounded-xl hover:bg-white/10">
+                <button
+                  aria-label="Close menu"
+                  onClick={() => setOpen(false)}
+                  className="p-2 rounded-xl hover:bg-white/10"
+                >
                   <X size={20} />
                 </button>
               </div>
@@ -107,18 +119,17 @@ export function Header() {
                       key={item.href}
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className={`px-3 py-3 rounded-xl focus-visible:ring-2 ring-brand-600
-                        ${active ? "bg-white/10 text-white" : "text-white/80 hover:bg-white/5"}`}
+                      className={`px-3 py-3 rounded-xl focus-visible:ring-2 ring-brand-600 ${active ? "bg-white/10 text-white" : "text-white/80 hover:bg-white/5"}`}
                     >
                       {item.label}
                     </Link>
                   );
                 })}
               </nav>
-              <div className="mt-auto">
+              <div className="pt-2">
                 <Link href={"/give" as Route} className="btn-primary w-full justify-center">Give</Link>
               </div>
-            </motion.div>
+            </motion.nav>
           </motion.div>
         )}
       </AnimatePresence>
