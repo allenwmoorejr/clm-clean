@@ -40,9 +40,9 @@ export default function SermonsPage() {
             onChange={e=>setYear(e.target.value)}
             className="px-3 py-3 rounded-xl bg-white/5 border border-white/10"
           >
-            <option value="all" className="text-black">All years</option>
+            <option value="all" className="text-black leading-7">All years</option>
             {years.map(y => (
-              <option key={y} value={y} className="text-black">{y}</option>
+              <option key={y} value={y} className="text-black leading-7">{y}</option>
             ))}
           </select>
           <input
