@@ -1,0 +1,55 @@
+- hosts: master:worker
+  become: yes
+  tasks:
+    - name: Install dependencies
+      apt:
+        name:
+          - curl
+          - nfs-common
+          - open-iscsi
+        state: present
+    - name: Disable swap
+      command: swapoff -a
+      when: ansible_swaptotal_mb > 0
+
+- hosts: master
+  become: yes
+  roles:
+    - role: xanmanning.k3s
+      k3s_control_node: true
+      k3s_server:
+        write_kubeconfig_mode: "0644"
+        disable:
+          - servicelb
+          - traefik
+        tls_san:
+          - "{{ cluster_vip }}"
+
+- hosts: worker
+  become: yes
+  roles:
+    - role: xanmanning.k3s
+      k3s_agent: true
+
+- hosts: master[0]
+  become: yes
+  tasks:
+    - name: Apply kube-vip manifest
+      shell: |
+        export VIP="{{ cluster_vip }}"
+        export INTERFACE=eth0
+        curl -sL https://kube-vip.io/manifests/manifest.yaml \
+          | sed "s/VIP/$VIP/;s/INTERFACE/$INTERFACE/" \
+          | kubectl apply -f -
+    - name: Copy MetalLB configuration
+      copy:
+        src: metallb-config.yaml
+        dest: /tmp/metallb-config.yaml
+    - name: Install MetalLB
+      shell: |
+        kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.12/manifests/metallb-native.yaml
+        kubectl apply -f /tmp/metallb-config.yaml
+      args:
+        creates: /tmp/metallb-installed
+    - name: Install Longhorn
+      shell: kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.1/deploy/longhorn.yaml
