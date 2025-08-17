@@ -2,7 +2,6 @@
 import UXEffects from "@/components/UXEffects";
 import "./globals.css";
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
 import Scenery from "@/components/Scenery";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -10,29 +9,36 @@ import { AnnouncementsBar } from "@/components/AnnouncementsBar";
 import { LiveTakeover } from "@/components/LiveTakeover";
 import PWA from "@/components/PWA";
 import WelcomeIntro from "@/components/WelcomeIntro";
-import Lightning from "@/components/Lightning";
 import ScrollProgress from "@/components/ScrollProgress";
 import ScrollToTop from "@/components/ScrollToTop";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({ subsets: ["latin"], weight: ["400", "600", "700"] });
 
 
 // ✅ Set a proper absolute base for OG/Twitter URLs
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://allenwmoorejr.org"),
   title: "Christ Like Ministries — Live & Sermons",
-  description: "Watch live and explore sermon videos from Christ Like Ministries (CLM).",
+  description:
+    "Preaching the gospel to the world in hopes that many will be saved. Teaching the saved how to stay saved.",
   openGraph: {
     title: "Christ Like Ministries — Live & Sermons",
-    description: "Join us Sundays at 10:00am CT and browse past messages.",
+    description:
+      "Preaching the gospel to the world in hopes that many will be saved. Teaching the saved how to stay saved.",
     url: process.env.NEXT_PUBLIC_SITE_URL || "https://allenwmoorejr.org",
     siteName: "CLM",
-    images: [{ url: "/api/og?title=Christ+Like+Ministries&subtitle=Live+Sundays+10:00am+CT" }],
+    images: [
+      { url: "/api/og?title=Christ+Like+Ministries&subtitle=Preaching+the+gospel+to+the+world" },
+    ],
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "CLM",
-    description: "Live and sermons from CLM",
+    description:
+      "Preaching the gospel to the world in hopes that many will be saved. Teaching the saved how to stay saved.",
   },
 };
 
@@ -43,9 +49,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>{/* … */}</head>
-      <body>
+      <body className={poppins.className}>
         <Scenery />
-        <Lightning />  {/* ⚡️ subtle, random strikes behind content */}
         <ScrollProgress />
         <AnnouncementsBar />
         <LiveTakeover />

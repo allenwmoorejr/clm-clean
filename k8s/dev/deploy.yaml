@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clm-site
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clm-site
+  template:
+    metadata:
+      labels:
+        app: clm-site
+    spec:
+      containers:
+        - name: clm-site
+          image: ghcr.io/wayne/clm-site:latest
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clm-site
+  namespace: dev
+spec:
+  type: ClusterIP
+  selector:
+    app: clm-site
+  ports:
+    - port: 80
+      targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: clm-site
+  namespace: dev
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-godaddy
+spec:
+  rules:
+    - host: dev.allenwmoorejr.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: clm-site
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - dev.allenwmoorejr.org
+      secretName: clm-site-tls
