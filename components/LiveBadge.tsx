@@ -41,13 +41,13 @@ export function LiveBadge() {
       <span
         className={[
           "inline-flex items-center gap-1.5 px-2 py-1 rounded-full",
-          live ? "bg-red-500/20 text-red-300" : "bg-white/10 text-white/70",
+          live ? "bg-red-500/20 text-red-300 shadow-glow" : "bg-white/10 text-white/70",
           !live && prox.animated ? "pill-animated" : ""
         ].join(" ")}
         style={!live ? ({ ["--dur" as any]: prox.dur, ["--glow" as any]: prox.glow } as any) : undefined}
       >
         <span className={`w-2 h-2 rounded-full ${live ? "bg-red-400 animate-pulse" : "bg-white/40"}`} />
-        {live ? "LIVE" : "Offline"}
+        {live ? "Online" : "Offline"}
       </span>
 
       {!live && (
