@@ -95,7 +95,6 @@ h3 { @apply text-2xl; }
   border-radius: inherit;
   padding: 2px;
   background: conic-gradient(#6366f1, #22d3ee, #6366f1);
-
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -112,6 +111,7 @@ h3 { @apply text-2xl; }
   0%,100% { opacity: 0.3; transform: scale(1); }
   50% { opacity: 0.9; transform: scale(1.04); }
 }
+
 
   animation: countdown-pill-glow var(--dur,3s) ease-in-out infinite;
 }
