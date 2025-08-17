@@ -161,10 +161,10 @@ export default function HomeClient() {
             <motion.p
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: 0.1 }}
-              className="mt-6 text-white/80 max-w-2xl"
+              className="mt-6 max-w-2xl text-lg sm:text-xl text-white/80 font-light leading-relaxed"
             >
-              Teaching saved people how to stay saved — and sharing Jesus with the world. Watch live, explore past sermons,
-              or send a prayer request.
+              Preaching the gospel to the world in hopes that many will be saved. Teaching the saved how to stay saved. Watch
+              live, explore past sermons, or send a prayer request.
             </motion.p>
 
             <motion.div

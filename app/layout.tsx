@@ -13,6 +13,9 @@ import WelcomeIntro from "@/components/WelcomeIntro";
 import Lightning from "@/components/Lightning";
 import ScrollProgress from "@/components/ScrollProgress";
 import ScrollToTop from "@/components/ScrollToTop";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({ subsets: ["latin"], weight: ["400", "600"] });
 
 
 // ✅ Set a proper absolute base for OG/Twitter URLs
@@ -43,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>{/* … */}</head>
-      <body>
+      <body className={poppins.className}>
         <Scenery />
         <Lightning />  {/* ⚡️ subtle, random strikes behind content */}
         <ScrollProgress />
