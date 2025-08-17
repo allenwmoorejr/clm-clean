@@ -1,9 +1,9 @@
 // app/events/page.tsx
 "use client";
-import { upcomingSundays } from "@/lib/nextService";
+import { upcomingEvents } from "@/lib/nextService";
 
 export default function EventsPage() {
-  const items = upcomingSundays(8); // next 8 Sundays
+  const items = upcomingEvents(8); // next 8 Sundays plus holidays
 
   return (
     <section className="container py-16">
