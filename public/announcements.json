@@ -5,5 +5,11 @@
     "href": "/events",
     "starts": "2025-08-01T00:00:00Z",
     "ends": "2025-09-18T05:00:00Z"
+  },
+  {
+    "id": "holiday-greetings",
+    "text": "Holiday Greetings \u2014 Merry Christmas!",
+    "starts": "2025-12-01T00:00:00Z",
+    "ends": "2026-01-05T05:00:00Z"
   }
 ]
