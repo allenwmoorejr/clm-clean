@@ -51,18 +51,6 @@ h3 { @apply text-2xl; }
 .btn-primary:active, .btn-ghost:active{
   transform: translateY(1px) scale(0.99);
 }
-
-/* Lightning flash animation */
-@keyframes lightning-flash {
-  0%   { opacity: 0.75; }
-  60%  { opacity: 0.15; }
-  100% { opacity: 0; }
-}
-.animate-lightning-flash {
-  animation: lightning-flash 220ms ease-out forwards;
-}
-
-
 /* Subtle readability mask over scenery */
 .scenery-mask{
   position: absolute; inset: 0;

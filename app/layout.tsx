@@ -9,7 +9,6 @@ import { AnnouncementsBar } from "@/components/AnnouncementsBar";
 import { LiveTakeover } from "@/components/LiveTakeover";
 import PWA from "@/components/PWA";
 import WelcomeIntro from "@/components/WelcomeIntro";
-import Lightning from "@/components/Lightning";
 import ScrollProgress from "@/components/ScrollProgress";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Poppins } from "next/font/google";
@@ -52,7 +51,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>{/* … */}</head>
       <body className={poppins.className}>
         <Scenery />
-        <Lightning />  {/* ⚡️ subtle, random strikes behind content */}
         <ScrollProgress />
         <AnnouncementsBar />
         <LiveTakeover />
