@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
+import NextImage from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { LiveBadge } from "@/components/LiveBadge";
 import { Menu, X } from "lucide-react";
@@ -32,9 +33,13 @@ export function Header() {
       ${scrolled ? "backdrop-blur bg-white/5 border-b border-white/10" : "backdrop-blur supports-[backdrop-filter]:bg-white/5 border-b border-white/10"}`}>
       <div className="container flex items-center justify-between h-16">
         {/* Brand */}
-        <Link href={"/" as Route} className="font-semibold tracking-tight text-lg focus:outline-none focus-visible:ring-2 ring-brand-600 rounded-xl px-1">
+        <Link
+          href={"/" as Route}
+          className="flex items-center gap-2 font-semibold tracking-tight text-lg focus:outline-none focus-visible:ring-2 ring-brand-600 rounded-xl px-1"
+        >
+          <NextImage src="/logo.svg" alt="CLM logo" width={32} height={32} />
           <span className="gradient-title">CLM</span>
-          <span className="text-white/60 ml-2 text-sm">Christ Like Ministries</span>
+          <span className="text-white/60 text-sm">Christ Like Ministries</span>
         </Link>
 
         {/* Desktop nav */}
