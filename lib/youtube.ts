@@ -1,1 +1,21 @@
-import { XMLParser } from 'fast-xml-parser';export async function fetchChannelRss(id:string){const u=`https://www.youtube.com/feeds/videos.xml?channel_id=${id}`;const r=await fetch(u,{next:{revalidate:60}});if(!r.ok)throw new Error('rss');const xml=await r.text();const p=new XMLParser({ignoreAttributes:false,attributeNamePrefix:''});return p.parse(xml)};export async function detectLiveVideoId(id:string){const u=`https://www.youtube.com/channel/${id}/live`;const r=await fetch(u,{redirect:'manual' as any});if(r.status>=300&&r.status<400){const loc=r.headers.get('location')||'';const m=loc.match(/v=([\w-]{11})/);if(m)return m[1]}return null}
+import { XMLParser } from "fast-xml-parser";
+
+export async function fetchChannelRss(id: string) {
+  const u = `https://www.youtube.com/feeds/videos.xml?channel_id=${id}`;
+  const r = await fetch(u, { next: { revalidate: 60 } });
+  if (!r.ok) throw new Error("rss");
+  const xml = await r.text();
+  const p = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "" });
+  return p.parse(xml);
+}
+
+export async function detectLiveVideoId(id: string) {
+  const u = `https://www.youtube.com/channel/${id}/live`;
+  const r = await fetch(u, { redirect: "manual" as any, cache: "no-store" });
+  if (r.status >= 300 && r.status < 400) {
+    const loc = r.headers.get("location") || "";
+    const m = loc.match(/v=([\w-]{11})/);
+    if (m) return m[1];
+  }
+  return null;
+}
