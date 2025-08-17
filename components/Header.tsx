@@ -30,18 +30,10 @@ export function Header() {
   return (
     <header className={`sticky top-0 z-40 transition
       ${scrolled ? "backdrop-blur bg-white/5 border-b border-white/10" : "backdrop-blur supports-[backdrop-filter]:bg-white/5 border-b border-white/10"}`}>
-      <div className="container grid grid-cols-2 md:grid-cols-3 items-center h-16">
-        {/* Brand */}
-        <Link
-          href={"/" as Route}
-          className="flex items-center gap-2 font-semibold tracking-tight text-lg focus:outline-none focus-visible:ring-2 ring-brand-600 rounded-xl px-1"
-        >
-          <span className="gradient-title">CLM</span>
-          <span className="text-white/60 text-sm">Christ Like Ministries</span>
-        </Link>
+      <div className="container grid grid-cols-1 md:grid-cols-2 items-center h-16">
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-2 relative justify-self-center">
+        <nav className="hidden md:flex items-center gap-2 relative">
           {/* sliding “pill” highlight */}
           <div className="relative flex items-center gap-2">
             {nav.map((item) => {
