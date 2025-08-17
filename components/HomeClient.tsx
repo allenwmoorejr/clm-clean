@@ -152,10 +152,12 @@ export default function HomeClient() {
             <motion.h1
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: 0.05 }}
-              className="mt-4 font-semibold tracking-tight"
+              className="mt-4 font-bold tracking-tight"
               style={{ fontSize: "var(--h1)" }}
             >
-              <span className="gradient-title">Join us Sundays at 10:00am</span>
+              <span className="gradient-title">
+                Preaching the gospel to the world in hopes that many will be saved.
+              </span>
             </motion.h1>
 
             <motion.p
@@ -163,8 +165,7 @@ export default function HomeClient() {
               transition={{ ...fadeUp.transition, delay: 0.1 }}
               className="mt-6 text-white/80 max-w-2xl"
             >
-              Teaching saved people how to stay saved — and sharing Jesus with the world. Watch live, explore past sermons,
-              or send a prayer request.
+              Teaching the saved how to stay saved.
             </motion.p>
 
             <motion.div
