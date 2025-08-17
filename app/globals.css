@@ -90,6 +90,40 @@ h3 { @apply text-2xl; }
 }
 .pill-animated { animation: pillPulse var(--dur,3s) ease-in-out infinite; }
 
+/* Glowing border highlight around countdown text */
+.countdown-pill {
+  position: relative;
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.1);
+  z-index: 0;
+}
+.countdown-pill::before,
+.countdown-pill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(#6366f1, #22d3ee, #6366f1);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.countdown-pill::after {
+  filter: blur(8px);
+  opacity: 0.5;
+  z-index: -1;
+  animation: countdown-pill-glow 4s ease-in-out infinite;
+}
+@keyframes countdown-pill-glow {
+  0%,100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.04); }
+}
+
 
 /* Hide horizontal scrollbar track for the sermon rail */
 .hide-scroll::-webkit-scrollbar{ display:none; }
