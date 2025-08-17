@@ -35,7 +35,7 @@ export function Header() {
         {/* Brand */}
         <Link
           href={"/" as Route}
-          className="flex items-center gap-2 font-semibold tracking-tight text-lg focus:outline-none focus-visible:ring-2 ring-brand-600 rounded-xl px-1"
+          className="flex items-center space-x-2 font-semibold tracking-tight text-lg focus:outline-none focus-visible:ring-2 ring-brand-600 rounded-xl px-1"
         >
           <NextImage src="/logo.svg" alt="CLM logo" width={32} height={32} />
           <span className="gradient-title">CLM</span>
@@ -43,9 +43,9 @@ export function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-2 relative justify-self-center">
+        <nav className="hidden md:flex items-center space-x-2 relative justify-self-center">
           {/* sliding “pill” highlight */}
-          <div className="relative flex items-center gap-2">
+          <div className="relative flex items-center space-x-2">
             {nav.map((item) => {
               const active = path === item.href;
               return (
@@ -72,13 +72,13 @@ export function Header() {
         </nav>
 
         {/* Right side: Live + CTA */}
-        <div className="hidden md:flex items-center gap-4 justify-self-end">
+        <div className="hidden md:flex items-center space-x-4 justify-self-end">
           <div className="hidden lg:block"><LiveBadge /></div>
           <Link href={"/give" as Route} className="btn-primary">Give</Link>
         </div>
 
         {/* Mobile actions */}
-        <div className="md:hidden flex items-center gap-3 justify-self-end">
+        <div className="md:hidden flex items-center space-x-3 justify-self-end">
           <Link href={"/watch" as Route} className="btn-primary">Watch</Link>
           <button aria-label="Open menu" onClick={() => setOpen(true)} className="p-2 rounded-xl hover:bg-white/10 focus-visible:ring-2 ring-brand-600">
             <Menu size={20} />
@@ -102,7 +102,7 @@ export function Header() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
               transition={{ type: "spring", stiffness: 260, damping: 20 }}
-              className="absolute top-16 left-4 right-4 bg-[#0b1020]/90 backdrop-blur-xl rounded-2xl border border-white/10 p-6 flex flex-col gap-6 shadow-lg"
+              className="absolute top-16 left-4 right-4 bg-[#0b1020]/90 backdrop-blur-xl rounded-2xl border border-white/10 p-6 flex flex-col space-y-6 shadow-lg"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between">
@@ -116,7 +116,7 @@ export function Header() {
                 </button>
               </div>
               <LiveBadge />
-              <nav className="flex flex-col gap-2">
+              <nav className="flex flex-col space-y-2">
                 {nav.map((item) => {
                   const active = path === item.href;
                   return (
