@@ -6,7 +6,9 @@ export const runtime = "edge";
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const title = searchParams.get("title") || "Christ Like Ministries";
-  const subtitle = searchParams.get("subtitle") || "Join us Sundays at 10:00am CT";
+  const subtitle =
+    searchParams.get("subtitle") ||
+    "Preaching the gospel to the world in hopes that many will be saved.";
 
   return new ImageResponse(
     (
