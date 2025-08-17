@@ -112,12 +112,6 @@ h3 { @apply text-2xl; }
   50% { opacity: 0.9; transform: scale(1.04); }
 }
 
-
-  animation: countdown-pill-glow var(--dur,3s) ease-in-out infinite;
-}
-
-
-
 @keyframes countdown-pill-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
