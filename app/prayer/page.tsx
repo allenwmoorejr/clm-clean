@@ -1,8 +1,7 @@
-import PrayerClient from "@/components/PrayerClient";
+import PrayerForm from './PrayerForm'
 
-export const metadata = { title: "Prayer Request" };
+export const metadata = { title: 'Prayer Request' }
 
-export default function Page() {
-  return <PrayerClient />;
+export default function PrayerPage(){
+  return <PrayerForm />
 }
-
