@@ -1,9 +1,11 @@
 "use client";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 
 export default function ScrollProgress() {
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
+  // Clamp the scroll progress to prevent overshoot past the page bounds.
+  const clampedProgress = useTransform(scrollYProgress, (p) => Math.min(Math.max(p, 0), 1));
+  const scaleX = useSpring(clampedProgress, {
     stiffness: 90,
     damping: 30,
     restDelta: 0.001,
