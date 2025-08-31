@@ -21,10 +21,26 @@ export default function WatchPage() {
   const timerRef = useRef<any>(null);
 
   useEffect(() => {
-    fetch("/api/live")
-      .then((r) => r.json())
-      .then((d: LiveResponse) => setData(d))
-      .catch(() => setData({ live: false }));
+    let active = true;
+
+    const poll = () =>
+      fetch("/api/live")
+        .then((r) => r.json())
+        .then((d: LiveResponse) => {
+          if (!active) return;
+          setData(d);
+        })
+        .catch(() => {
+          if (!active) return;
+          setData({ live: false });
+        });
+
+    poll();
+    const id = setInterval(poll, 30000);
+    return () => {
+      active = false;
+      clearInterval(id);
+    };
   }, []);
 
   const videoId = data?.live ? data.videoId : data?.latestId;
